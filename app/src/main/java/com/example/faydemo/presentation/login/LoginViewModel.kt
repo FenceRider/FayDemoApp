@@ -8,23 +8,24 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
 data class LoginState(
-    val initialized:Boolean = false,
+    val initialized: Boolean = false,
     val username: String = "",
     val password: String = ""
 )
 
-sealed class LoginNavEvent{
+sealed class LoginNavEvent {
     data object SuccessfulLogin : LoginNavEvent()
 }
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     //login repo
-): ViewModel() {
+) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginState())
     val uiState = _uiState.asStateFlow()
 
@@ -34,7 +35,7 @@ class LoginViewModel @Inject constructor(
 
     fun init() {}
 
-    fun login(){
+    fun login() {
         val username = uiState.value.username
         val password = uiState.value.password
 
@@ -43,6 +44,14 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _navEvent.emit(LoginNavEvent.SuccessfulLogin)
         }
+    }
+
+    fun setUsername(newValue: String) {
+        _uiState.update { it.copy(username = newValue) }
+    }
+
+    fun setPassword(newValue: String) {
+        _uiState.update { it.copy(password = newValue) }
     }
 
 
