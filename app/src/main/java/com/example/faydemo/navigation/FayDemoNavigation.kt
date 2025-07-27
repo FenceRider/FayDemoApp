@@ -42,7 +42,9 @@ fun FayDemoNavGraph(
 
         composable<ProductRoute> {
             ProductScreen(
-                innerPadding = innerPadding)
+                innerPadding = innerPadding,
+                onBack = {}
+            )
         }
     }
 

@@ -34,6 +34,7 @@ fun makeOpenClient(): HttpClient = HttpClient(CIO) {
             Json {
                 prettyPrint = true
                 isLenient = false
+                ignoreUnknownKeys = true
             }
         )
     }

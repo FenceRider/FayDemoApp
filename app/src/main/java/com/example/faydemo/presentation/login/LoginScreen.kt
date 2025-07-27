@@ -39,6 +39,8 @@ import com.example.faydemo.R
 import com.example.faydemo.ui.components.ActionText
 import com.example.faydemo.ui.components.FayFullWidthButton
 import com.example.faydemo.ui.components.FayFullWidthOutlineButton
+import com.example.faydemo.ui.components.FayOutlinedTextField
+import com.example.faydemo.ui.components.FayRoundedCorner
 import com.example.faydemo.ui.components.HorizontalDividerWithText
 
 
@@ -212,13 +214,11 @@ fun LoginSection(
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(4.dp))
-        OutlinedTextField(
+        FayOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text(stringResource(R.string.enter_phone_number)) },
             value = username,
-            onValueChange = setUsername,
-            shape = RoundedCornerShape(10.dp)
-
+            onValueChange = setUsername
         )
     }
 }
