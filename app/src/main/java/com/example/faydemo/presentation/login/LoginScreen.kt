@@ -1,11 +1,14 @@
 package com.example.faydemo.presentation.login
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,11 +28,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.room.util.TableInfo
 import com.example.faydemo.R
 import com.example.faydemo.ui.components.ActionText
 import com.example.faydemo.ui.components.FayFullWidthButton
@@ -65,42 +70,92 @@ fun LoginScreen(
     Box(
         modifier = Modifier.padding(innerPadding)
     ) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.Start
-        ) {
 
 
-            Image(
-                modifier = Modifier
-                    .padding(vertical = 32.dp)
-                    .width(150.dp),
-                painter = painterResource(R.drawable.fay_logo),
-                contentDescription = stringResource(R.string.fay_logo)
-            )
+        val configuration = LocalConfiguration.current
+
+        when (configuration.orientation) {
+
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                Column(
+                    modifier = Modifier.fillMaxHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .padding(vertical = 8.dp)
+                            .width(150.dp),
+                        painter = painterResource(R.drawable.fay_logo),
+                        contentDescription = stringResource(R.string.fay_logo)
+                    )
+
+                    Row(
+                        modifier = Modifier.padding(20.dp),
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .weight(.5f)
+                        ) {
+
+                            LoginSection(
+                                username = state.username,
+                                setUsername = viewModel::setUsername,
+                                password = state.password,
+                                setPassword = viewModel::setPassword,
+                                onLogin = viewModel::login,
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(20.dp))
+
+                        Column(
+                            modifier = Modifier
+                                .weight(.5f)
+
+                        ) {
+                            ActionSection(onLogin = viewModel::login)
+                        }
+                    }
+                }
+            }
+
+            else -> {
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start
+                ) {
+
+
+                    Image(
+                        modifier = Modifier
+                            .padding(vertical = 32.dp)
+                            .width(150.dp),
+                        painter = painterResource(R.drawable.fay_logo),
+                        contentDescription = stringResource(R.string.fay_logo)
+                    )
 
 
 
-            LoginSection(
-                username = state.username,
-                setUsername = viewModel::setUsername,
-                password = state.password,
-                setPassword = viewModel::setPassword,
-                onLogin = viewModel::login,
-            )
+                    LoginSection(
+                        username = state.username,
+                        setUsername = viewModel::setUsername,
+                        password = state.password,
+                        setPassword = viewModel::setPassword,
+                        onLogin = viewModel::login,
+                    )
 
-            Spacer(Modifier.weight(1f))
+                    Spacer(Modifier.weight(1f))
 
-            ActionSection(onLogin = viewModel::login)
+                    ActionSection(onLogin = viewModel::login)
+                }
+            }
         }
-
     }
 
 }
-
-
-
 
 
 @Composable
