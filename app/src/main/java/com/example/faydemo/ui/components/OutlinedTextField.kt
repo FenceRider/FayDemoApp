@@ -14,12 +14,14 @@ fun FayOutlinedTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (newValue: String) -> Unit,
+    trailingIcon: (@Composable () -> Unit)? = null,
     placeholder: (@Composable () -> Unit)? = null
 ) {
     OutlinedTextField(
         modifier = modifier,
         placeholder = placeholder,
         value = value,
+        trailingIcon = trailingIcon,
         onValueChange = onValueChange,
         shape = FayRoundedCorner
     )

@@ -42,6 +42,7 @@ import com.example.faydemo.ui.components.FayFullWidthOutlineButton
 import com.example.faydemo.ui.components.FayOutlinedTextField
 import com.example.faydemo.ui.components.FayRoundedCorner
 import com.example.faydemo.ui.components.HorizontalDividerWithText
+import com.example.faydemo.ui.components.ScreenPadding
 
 
 @Composable
@@ -69,10 +70,7 @@ fun LoginScreen(
         }
     }
 
-    Box(
-        modifier = Modifier.padding(innerPadding)
-    ) {
-
+    ScreenPadding(innerPadding) {
 
         val configuration = LocalConfiguration.current
 

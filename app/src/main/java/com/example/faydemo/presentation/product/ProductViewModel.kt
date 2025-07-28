@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class ProductState(
-    val queryBarcode: String = "",
+    val queryBarcode: String = "3017620422003",
     val product: ProductModel? = null,
     val error: String? = null,
     val isLoadingProduct: Boolean = false,
@@ -32,7 +32,7 @@ class ProductViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
 
-    fun init(){
+    fun init() {
         //nothing to do
     }
 
@@ -78,6 +78,10 @@ class ProductViewModel @Inject constructor(
 
             stopLoading()
         }
+    }
+
+    fun clearProduct() {
+        _uiState.update { it.copy(product = null) }
     }
 
 

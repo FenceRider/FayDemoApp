@@ -15,3 +15,10 @@ val PrimaryBlue = Color(0xff6874e8)
 val Outline = Color(0xFFa3a3a3)
 
 val DividerColor = Color(0xFFa3a3a3)
+
+val EcoGradeA = Color(0xFF2ECC71) // Green
+val EcoGradeB = Color(0xFF7DCE82) // Light Green
+val EcoGradeC = Color(0xFFF1C40F) // Yellow
+val EcoGradeD = Color(0xFFF39C12) // Orange
+val EcoGradeE = Color(0xFFE67E22) // Dark Orange
+val EcoGradeF = Color(0xFFE74C3C) // Red

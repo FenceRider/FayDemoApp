@@ -83,6 +83,8 @@ dependencies {
     implementation(libs.kotlinx.coroutines)
     implementation(libs.timber)
     implementation(libs.androidx.icons)
+    implementation(libs.coil)
+    implementation(libs.coil.network)
 
     //database
     implementation(libs.room)

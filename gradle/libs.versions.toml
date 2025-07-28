@@ -14,7 +14,7 @@ hilt = "2.57"
 androidxHiltNavigationCompose = "1.2.0"
 ksp = "2.2.0-2.0.2"
 kotlinxCoroutines = "1.10.2"
-#materialCompose = "1.8.0"
+
 navigation = "2.9.2"
 timber = "5.0.1"
 kotlinxSerializationJson = "1.9.0"
@@ -22,6 +22,7 @@ ktor = "3.2.2"
 room = "2.7.2"
 sqllite = "2.5.2"
 icons = "1.7.8"
+coil = "3.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,7 +39,7 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-#androidx-material = { module = "androidx.compose.material:material", version.ref = "materialCompose" }
+
 
 #hilt
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
@@ -56,6 +57,10 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 sql-lite = { group = "androidx.sqlite", name = "sqlite", version.ref = "sqllite" }
 
 androidx-icons = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "icons" }
+
+coil = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
+
 
 #ktor chaos - how long has http existed?
 ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }

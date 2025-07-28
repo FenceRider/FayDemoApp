@@ -12,4 +12,6 @@
     <string name="or">or</string>
     <string name="new_to_fay">New to Fay? Start by finding a dietitian</string>
     <string name="enter_barcode">Enter barcode</string>
+    <string name="get_product">Get Product</string>
+    <string name="environment_grade">Environment Grade</string>
 </resources>
