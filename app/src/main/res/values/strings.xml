@@ -14,4 +14,6 @@
     <string name="enter_barcode">Enter barcode</string>
     <string name="get_product">Get Product</string>
     <string name="environment_grade">Environment Grade</string>
+    <string name="select_product_prompt">Enter a barcode, or choose a previously seen product to view details…</string>
+    <string name="product_info">Product Information</string>
 </resources>

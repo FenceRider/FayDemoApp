@@ -26,6 +26,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -51,10 +53,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.room.util.TableInfo
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.example.faydemo.R
@@ -133,6 +137,11 @@ fun ProductScreen(
                                 )
 
                             }
+                        }
+                        androidx.compose.animation.AnimatedVisibility(
+                            state.product == null,
+                        ) {
+                            ProductPanePlaceholder(isLoading = false)
                         }
                     }
                 }
@@ -219,6 +228,35 @@ fun ProductSheet(
     }
 }
 
+
+@Composable
+fun ProductPanePlaceholder(isLoading: Boolean) {
+    Box(
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth(),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(.8f),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                modifier = Modifier
+                    .padding(vertical = 32.dp)
+                    .width(150.dp),
+                painter = painterResource(R.drawable.fay_logo),
+                contentDescription = stringResource(R.string.fay_logo)
+            )
+
+            Text(
+                text = "Enter a barcode, or choose an already seen product to view details...",
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
 @Composable
 fun ProductPane(
     onDismiss: () -> Unit,
@@ -239,7 +277,12 @@ fun ProductPane(
                 modifier = Modifier.padding(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Product Information", style = MaterialTheme.typography.titleLarge)
+                Icon(imageVector = Icons.Outlined.Info, contentDescription = null)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    stringResource(R.string.product_info),
+                    style = MaterialTheme.typography.titleLarge
+                )
                 Spacer(modifier = Modifier.weight(1f))
                 ActionText(
                     "Done",
@@ -344,6 +387,7 @@ fun BarcodeEntry(
     Column {
         Text("Barcode")
         FayOutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
             placeholder = { Text(stringResource(R.string.enter_barcode)) },
             trailingIcon = {
                 Row {
@@ -374,31 +418,39 @@ fun ProductWall(
     onProductClick: (barcode: String) -> Unit,
     selectedBarcode: String?
 ) {
-    FlowRow(modifier = Modifier.verticalScroll(rememberScrollState())) {
+    FlowRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.Center
+    ) {
         products.forEach {
             val isSelected = selectedBarcode == it.barcode
             Box(
                 modifier = Modifier
                     .padding(4.dp)
-                    .clickable { onProductClick(it.barcode) }) {
-                AsyncImage(
-                    model =
-                        ImageRequest
-                            .Builder(LocalContext.current)
-                            .data(it.image)
-                            //.placeholder(R.drawable.generic_icon)
-                            .build(),
-                    contentDescription = it.name,
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(FayRoundedCorner)
-                        .border(
-                            width = if (isSelected) 2.dp else 1.dp,
-                            color = if (isSelected) MaterialTheme.colorScheme.primary else Outline,
-                            shape = FayRoundedCorner
-                        ),
-                    contentScale = ContentScale.Fit
-                )
+                    .weight(1f)
+            ) {
+                Box(modifier = Modifier.clickable { onProductClick(it.barcode) }) {
+                    AsyncImage(
+                        model =
+                            ImageRequest
+                                .Builder(LocalContext.current)
+                                .data(it.image)
+                                //.placeholder(R.drawable.generic_icon)
+                                .build(),
+                        contentDescription = it.name,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(FayRoundedCorner)
+                            .border(
+                                width = if (isSelected) 2.dp else 1.dp,
+                                color = if (isSelected) MaterialTheme.colorScheme.primary else Outline,
+                                shape = FayRoundedCorner
+                            ),
+                        contentScale = ContentScale.Fit
+                    )
+                }
             }
         }
     }
