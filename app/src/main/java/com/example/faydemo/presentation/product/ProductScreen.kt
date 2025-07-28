@@ -1,7 +1,9 @@
 package com.example.faydemo.presentation.product
 
 import android.app.Notification
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +18,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Card
@@ -38,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -50,6 +55,8 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.example.faydemo.R
 import com.example.faydemo.data.models.ProductModel
+import com.example.faydemo.presentation.login.ActionSection
+import com.example.faydemo.presentation.login.LoginSection
 import com.example.faydemo.ui.components.ActionText
 import com.example.faydemo.ui.components.FayIconButton
 import com.example.faydemo.ui.components.FayOutlinedTextField
@@ -84,29 +91,75 @@ fun ProductScreen(
     }
 
     ScreenPadding(innerPadding) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+        val configuration = LocalConfiguration.current
+        when (configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Box(
+                        modifier = Modifier
+                            .weight(.5f)
+                            .fillMaxHeight(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        BarcodeEntry(
+                            barcode = state.queryBarcode,
+                            getProduct = viewModel::tryGetProduct,
+                            setBarcode = viewModel::setBarcode
+                        )
+                    }
 
-            BarcodeEntry(
-                barcode = state.queryBarcode,
-                getProduct = viewModel::tryGetProduct,
-                setBarcode = viewModel::setBarcode
-            )
+                    Box(
+                        modifier = Modifier
+                            .weight(.5f)
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        androidx.compose.animation.AnimatedVisibility(
+                            state.product != null,
+                        ) {
+                            state.product?.let { product ->
 
-            AnimatedVisibility(visible = state.product != null) {
-                state.product?.let {
-                    ProductSheet(it, {
-                        viewModel.clearProduct()
-                    })
+                                ProductPane(
+                                    onDismiss = viewModel::clearProduct,
+                                    product = product
+                                )
+
+                            }
+                        }
+                    }
                 }
 
             }
+
+            else -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+
+                    BarcodeEntry(
+                        barcode = state.queryBarcode,
+                        getProduct = viewModel::tryGetProduct,
+                        setBarcode = viewModel::setBarcode
+                    )
+
+                    AnimatedVisibility(visible = state.product != null) {
+                        state.product?.let {
+                            ProductSheet(it, {
+                                viewModel.clearProduct()
+                            })
+                        }
+
+                    }
+                }
+            }
         }
+
+
     }
 }
 
@@ -125,69 +178,84 @@ fun ProductSheet(
         dragHandle = {},
         onDismissRequest = onDismiss
     ) {
-        Box(
-            modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth(),
-            contentAlignment = Alignment.TopCenter
+        ProductPane(
+            onDismiss = onDismiss,
+            product = product
+        )
+    }
+}
+
+@Composable
+fun ProductPane(
+    onDismiss: () -> Unit,
+    product: ProductModel
+) {
+    Box(
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth(),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+
+            Row(
+                modifier = Modifier.padding(10.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                Text("Product Information", style = MaterialTheme.typography.titleLarge)
+                Spacer(modifier = Modifier.weight(1f))
+                ActionText(
+                    "Done",
+                    style = MaterialTheme.typography.titleMedium
+                ) { onDismiss() }
+            }
 
-                Row(
-                    modifier = Modifier.padding(10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("Product Information", style = MaterialTheme.typography.titleLarge)
-                    Spacer(modifier = Modifier.weight(1f))
-                    ActionText("Done", style = MaterialTheme.typography.titleMedium) { onDismiss() }
-                }
+            AsyncImage(
+                model =
+                    ImageRequest
+                        .Builder(LocalContext.current)
+                        .data(product.image)
+                        //.placeholder(R.drawable.generic_icon)
+                        .build(),
+                contentDescription = "Profile Image",
+                modifier = Modifier
+                    .height(200.dp)
+                    .clip(FayRoundedCorner)
+                    .border(
+                        1.dp,
+                        color = Outline,
+                        shape = FayRoundedCorner
+                    ),
+                contentScale = ContentScale.Fit
+            )
 
-                AsyncImage(
-                    model =
-                        ImageRequest
-                            .Builder(LocalContext.current)
-                            .data(product.image)
-                            //.placeholder(R.drawable.generic_icon)
-                            .build(),
-                    contentDescription = "Profile Image",
-                    modifier = Modifier
-                        .height(200.dp)
-                        .clip(FayRoundedCorner)
-                        .border(
-                            1.dp,
-                            color = Outline,
-                            shape = FayRoundedCorner
-                        ),
-                    contentScale = ContentScale.Fit
-                )
+            Spacer(modifier = Modifier.height(10.dp))
 
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Card(
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(vertical = 10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = product.name, style = MaterialTheme.typography.titleLarge)
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.outline_barcode_24),
-                                contentDescription = ""
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("(${product.barcode})")
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        EcoGrade(product.ecoGrade)
+                    Text(text = product.name, style = MaterialTheme.typography.titleLarge)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.outline_barcode_24),
+                            contentDescription = ""
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("(${product.barcode})")
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    EcoGrade(product.ecoGrade)
                 }
             }
         }
