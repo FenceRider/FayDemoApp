@@ -4,7 +4,7 @@ data class ProductModel(
     val barcode: String,
     val name: String,
     val image: String,
-    val ecoScore: Int,
-    val ecoGrade: String
+    val ecoScore: Int?,
+    val ecoGrade: String?
 
 )

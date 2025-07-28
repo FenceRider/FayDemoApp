@@ -15,6 +15,7 @@ import javax.inject.Inject
 data class ProductState(
     val queryBarcode: String = "3017620422003",
     val product: ProductModel? = null,
+    val seenProducts: List<ProductModel> = emptyList(),
     val error: String? = null,
     val isLoadingProduct: Boolean = false,
 )
@@ -33,7 +34,7 @@ class ProductViewModel @Inject constructor(
 
 
     fun init() {
-        //nothing to do
+        getSeenProductList()
     }
 
     fun setBarcode(newBarcode: String) {
@@ -53,8 +54,7 @@ class ProductViewModel @Inject constructor(
      * api will rate limit at 100r/m so please only call this when the user is ready
      * to search
      */
-    fun tryGetProduct() {
-        val barcode = _uiState.value.queryBarcode
+    fun tryGetProduct(barcode: String = uiState.value.queryBarcode) {
         viewModelScope.launch {
             startLoading()
             when (val result = productRepository.getProduct(barcode)) {
@@ -73,11 +73,24 @@ class ProductViewModel @Inject constructor(
                             product = result.data
                         )
                     }
+                    getSeenProductList()
                 }
             }
 
             stopLoading()
         }
+    }
+
+    fun getSeenProductList() {
+        viewModelScope.launch {
+            when (val result = productRepository.readProducts()) {
+                is FayResult.Error -> Unit
+                is FayResult.Success -> result.data?.let { data ->
+                    _uiState.update { it.copy(seenProducts = data) }
+                }
+            }
+        }
+
     }
 
     fun clearProduct() {

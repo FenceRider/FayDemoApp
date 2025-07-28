@@ -13,6 +13,6 @@ data class ProductResponse(
 data class Product(
     val product_name: String,
     val image_url: String,
-    val ecoscore_score: Int,
-    val ecoscore_grade: String
+    val ecoscore_score: Int? = null,
+    val ecoscore_grade: String? = null
 )

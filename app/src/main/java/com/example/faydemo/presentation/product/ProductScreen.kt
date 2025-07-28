@@ -5,9 +5,13 @@ import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ContextualFlowRow
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -101,11 +105,14 @@ fun ProductScreen(
                             .fillMaxHeight(),
                         contentAlignment = Alignment.Center
                     ) {
-                        BarcodeEntry(
-                            barcode = state.queryBarcode,
-                            getProduct = viewModel::tryGetProduct,
-                            setBarcode = viewModel::setBarcode
+                        SelectionPane(
+                            queryBarcode = state.queryBarcode,
+                            tryGetProduct = viewModel::tryGetProduct,
+                            setBarcode = viewModel::setBarcode,
+                            seenProducts = state.seenProducts,
+                            selectedBarcode = state.product?.barcode
                         )
+
                     }
 
                     Box(
@@ -141,10 +148,12 @@ fun ProductScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
 
-                    BarcodeEntry(
-                        barcode = state.queryBarcode,
-                        getProduct = viewModel::tryGetProduct,
-                        setBarcode = viewModel::setBarcode
+                    SelectionPane(
+                        queryBarcode = state.queryBarcode,
+                        tryGetProduct = viewModel::tryGetProduct,
+                        setBarcode = viewModel::setBarcode,
+                        seenProducts = state.seenProducts,
+                        selectedBarcode = state.product?.barcode
                     )
 
                     AnimatedVisibility(visible = state.product != null) {
@@ -163,6 +172,31 @@ fun ProductScreen(
     }
 }
 
+
+@Composable
+fun SelectionPane(
+    queryBarcode: String,
+    selectedBarcode: String?,
+    tryGetProduct: (barcode: String) -> Unit,
+    setBarcode: (barcode: String) -> Unit,
+    seenProducts: List<ProductModel>
+) {
+    Column {
+        BarcodeEntry(
+            barcode = queryBarcode,
+            getProduct = { tryGetProduct(queryBarcode) },
+            setBarcode = setBarcode
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        ProductWall(
+            products = seenProducts,
+            onProductClick = { tryGetProduct(it) },
+            selectedBarcode = selectedBarcode
+        )
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -263,7 +297,8 @@ fun ProductPane(
 }
 
 @Composable
-fun EcoGrade(ecoGrade: String) {
+fun EcoGrade(ecoGrade: String?) {
+    val ecoGrade = if ((ecoGrade?.length ?: 0) > 1) null else ecoGrade
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier
@@ -275,7 +310,7 @@ fun EcoGrade(ecoGrade: String) {
                 ),
             contentAlignment = Alignment.Center
         ) {
-            val grade = ecoGrade.uppercase(getDefault())
+            val grade = ecoGrade?.uppercase(getDefault()) ?: "?"
             Text(
                 modifier = Modifier,
                 text = grade,
@@ -331,5 +366,44 @@ fun BarcodeEntry(
         )
     }
 }
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun ProductWall(
+    products: List<ProductModel>,
+    onProductClick: (barcode: String) -> Unit,
+    selectedBarcode: String?
+) {
+    FlowRow(modifier = Modifier.verticalScroll(rememberScrollState())) {
+        products.forEach {
+            val isSelected = selectedBarcode == it.barcode
+            Box(
+                modifier = Modifier
+                    .padding(4.dp)
+                    .clickable { onProductClick(it.barcode) }) {
+                AsyncImage(
+                    model =
+                        ImageRequest
+                            .Builder(LocalContext.current)
+                            .data(it.image)
+                            //.placeholder(R.drawable.generic_icon)
+                            .build(),
+                    contentDescription = it.name,
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(FayRoundedCorner)
+                        .border(
+                            width = if (isSelected) 2.dp else 1.dp,
+                            color = if (isSelected) MaterialTheme.colorScheme.primary else Outline,
+                            shape = FayRoundedCorner
+                        ),
+                    contentScale = ContentScale.Fit
+                )
+            }
+        }
+    }
+}
+
+
 
 
