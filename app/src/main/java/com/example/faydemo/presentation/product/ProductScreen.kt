@@ -2,7 +2,16 @@ package com.example.faydemo.presentation.product
 
 import android.app.Notification
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.with
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -81,6 +90,7 @@ import java.nio.file.WatchEvent
 import java.util.Locale
 import java.util.Locale.getDefault
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ProductScreen(
     viewModel: ProductViewModel = hiltViewModel(), innerPadding: PaddingValues, onBack: () -> Unit
@@ -127,26 +137,37 @@ fun ProductScreen(
                             .fillMaxHeight(),
                         contentAlignment = Alignment.Center
                     ) {
-                        androidx.compose.animation.AnimatedVisibility(
-                            state.product != null,
-                        ) {
-                            state.product?.let { product ->
+                        AnimatedContent(
+                            targetState = state.product,
+                            transitionSpec = {
+                                // Define the enter transition
+                                // slide in from the right + fade in
+                                val enter = slideIntoContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Down,
+                                    animationSpec = tween(durationMillis = 300)
+                                ) + fadeIn(animationSpec = tween(300))
 
-                                ProductPane(
+                                // slide out to the left + fade out
+                                val exit = slideOutOfContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Down,
+                                    animationSpec = tween(300)
+                                ) + fadeOut(animationSpec = tween(300))
+
+                                enter.togetherWith(exit) using SizeTransform(clip = false)
+                            }
+                        ) { product ->
+                            when {
+                                product != null -> ProductPane(
                                     onDismiss = viewModel::clearProduct,
                                     product = product
                                 )
 
+                                else -> ProductPanePlaceholder(isLoading = false)
                             }
-                        }
-                        androidx.compose.animation.AnimatedVisibility(
-                            state.product == null,
-                        ) {
-                            ProductPanePlaceholder(isLoading = false)
+
                         }
                     }
                 }
-
             }
 
             else -> {
@@ -434,7 +455,7 @@ fun ProductWall(
             Box(
                 modifier = Modifier
                     .padding(4.dp)
-                    //.weight(1f)
+                //.weight(1f)
             ) {
                 Box(modifier = Modifier.clickable { onProductClick(it.barcode) }) {
                     AsyncImage(
