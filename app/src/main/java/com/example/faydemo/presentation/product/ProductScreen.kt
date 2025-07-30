@@ -31,6 +31,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -62,6 +63,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
+import coil3.request.placeholder
 import com.example.faydemo.R
 import com.example.faydemo.data.models.ProductModel
 import com.example.faydemo.ui.components.ActionText
@@ -308,7 +310,7 @@ fun ProductPane(
                     ImageRequest
                         .Builder(LocalContext.current)
                         .data(product.image)
-                        //.placeholder(R.drawable.generic_icon)
+                        .placeholder(R.drawable.outline_image_24)
                         .build(),
                 contentDescription = "Profile Image",
                 modifier = Modifier
@@ -451,7 +453,7 @@ fun ProductWall(
                             ImageRequest
                                 .Builder(LocalContext.current)
                                 .data(it.image)
-                                //.placeholder(R.drawable.generic_icon)
+                                .placeholder(R.drawable.outline_image_24)
                                 .build(),
                         contentDescription = it.name,
                         modifier = Modifier
