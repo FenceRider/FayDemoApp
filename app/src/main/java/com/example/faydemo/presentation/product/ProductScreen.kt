@@ -1,6 +1,5 @@
 package com.example.faydemo.presentation.product
 
-import android.app.Notification
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -11,21 +10,18 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.with
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ContextualFlowRow
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,14 +31,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.ModalBottomSheetDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -63,17 +57,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.room.util.TableInfo
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.example.faydemo.R
 import com.example.faydemo.data.models.ProductModel
-import com.example.faydemo.presentation.login.ActionSection
-import com.example.faydemo.presentation.login.LoginSection
 import com.example.faydemo.ui.components.ActionText
 import com.example.faydemo.ui.components.FayIconButton
 import com.example.faydemo.ui.components.FayOutlinedTextField
@@ -86,14 +76,12 @@ import com.example.faydemo.ui.theme.EcoGradeD
 import com.example.faydemo.ui.theme.EcoGradeE
 import com.example.faydemo.ui.theme.EcoGradeF
 import com.example.faydemo.ui.theme.Outline
-import java.nio.file.WatchEvent
-import java.util.Locale
 import java.util.Locale.getDefault
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ProductScreen(
-    viewModel: ProductViewModel = hiltViewModel(), innerPadding: PaddingValues, onBack: () -> Unit
+    viewModel: ProductViewModel = hiltViewModel(), innerPadding: PaddingValues
 ) {
 
 
@@ -162,7 +150,7 @@ fun ProductScreen(
                                     product = product
                                 )
 
-                                else -> ProductPanePlaceholder(isLoading = false)
+                                else -> ProductPanePlaceholder()
                             }
 
                         }
@@ -190,9 +178,9 @@ fun ProductScreen(
 
                     AnimatedVisibility(visible = state.product != null) {
                         state.product?.let {
-                            ProductSheet(it, {
+                            ProductSheet(it) {
                                 viewModel.clearProduct()
-                            })
+                            }
                         }
 
                     }
@@ -255,7 +243,7 @@ fun ProductSheet(
 
 
 @Composable
-fun ProductPanePlaceholder(isLoading: Boolean) {
+fun ProductPanePlaceholder() {
     Box(
         modifier = Modifier
             .padding(10.dp)

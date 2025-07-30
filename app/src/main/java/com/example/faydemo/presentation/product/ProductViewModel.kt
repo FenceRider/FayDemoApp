@@ -20,9 +20,7 @@ data class ProductState(
     val isLoadingProduct: Boolean = false,
 )
 
-sealed class ProductNavEvent {
-
-}
+sealed class ProductNavEvent
 
 @HiltViewModel
 class ProductViewModel @Inject constructor(

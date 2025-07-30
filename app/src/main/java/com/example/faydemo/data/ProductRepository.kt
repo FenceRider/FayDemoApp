@@ -4,7 +4,6 @@ import com.example.faydemo.data.models.ProductModel
 import com.example.faydemo.database.models.ProductDao
 import com.example.faydemo.database.models.ProductEntity
 import com.example.faydemo.network.ProductRequest
-import com.example.faydemo.network.doRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

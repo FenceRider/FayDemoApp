@@ -182,8 +182,7 @@ fun LoginSection(
     phoneNumber: String,
     setPhoneNumber: (newValue: String) -> Unit,
 ) {
-    Column(
-    ) {
+    Column {
         Text(
             stringResource(R.string.log_in),
             style = MaterialTheme.typography.titleLarge,

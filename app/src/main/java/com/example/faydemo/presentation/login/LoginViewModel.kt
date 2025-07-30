@@ -35,7 +35,7 @@ class LoginViewModel @Inject constructor(
     fun init() {}
 
     fun login() {
-        val username = uiState.value.phoneNumber
+        //val username = uiState.value.phoneNumber
 
         //login to api
 
