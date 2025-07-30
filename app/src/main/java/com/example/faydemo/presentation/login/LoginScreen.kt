@@ -95,6 +95,7 @@ fun LoginScreen(
                                 .weight(.5f)
                         ) {
 
+                            Spacer(modifier = Modifier.height(12.dp))
                             LoginSection(
                                 phoneNumber = state.phoneNumber,
                                 setPhoneNumber = viewModel::setUsername,
@@ -189,7 +190,7 @@ fun LoginSection(
             fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(25.dp))
 
         Text(
             text = stringResource(R.string.phone_number),
