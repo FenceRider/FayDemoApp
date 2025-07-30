@@ -13,11 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,13 +32,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.room.util.TableInfo
 import com.example.faydemo.R
 import com.example.faydemo.ui.components.ActionText
 import com.example.faydemo.ui.components.FayFullWidthButton
 import com.example.faydemo.ui.components.FayFullWidthOutlineButton
 import com.example.faydemo.ui.components.FayOutlinedTextField
-import com.example.faydemo.ui.components.FayRoundedCorner
 import com.example.faydemo.ui.components.HorizontalDividerWithText
 import com.example.faydemo.ui.components.ScreenPadding
 
@@ -100,11 +96,8 @@ fun LoginScreen(
                         ) {
 
                             LoginSection(
-                                username = state.username,
-                                setUsername = viewModel::setUsername,
-                                password = state.password,
-                                setPassword = viewModel::setPassword,
-                                onLogin = viewModel::login,
+                                phoneNumber = state.phoneNumber,
+                                setPhoneNumber = viewModel::setUsername,
                             )
                         }
 
@@ -137,14 +130,9 @@ fun LoginScreen(
                         contentDescription = stringResource(R.string.fay_logo)
                     )
 
-
-
                     LoginSection(
-                        username = state.username,
-                        setUsername = viewModel::setUsername,
-                        password = state.password,
-                        setPassword = viewModel::setPassword,
-                        onLogin = viewModel::login,
+                        phoneNumber = state.phoneNumber,
+                        setPhoneNumber = viewModel::setUsername,
                     )
 
                     Spacer(Modifier.weight(1f))
@@ -190,11 +178,8 @@ fun ActionSection(
 
 @Composable
 fun LoginSection(
-    onLogin: () -> Unit,
-    username: String,
-    password: String,
-    setUsername: (newValue: String) -> Unit,
-    setPassword: (newValue: String) -> Unit
+    phoneNumber: String,
+    setPhoneNumber: (newValue: String) -> Unit,
 ) {
     Column(
     ) {
@@ -215,8 +200,8 @@ fun LoginSection(
         FayOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text(stringResource(R.string.enter_phone_number)) },
-            value = username,
-            onValueChange = setUsername
+            value = phoneNumber,
+            onValueChange = setPhoneNumber
         )
     }
 }

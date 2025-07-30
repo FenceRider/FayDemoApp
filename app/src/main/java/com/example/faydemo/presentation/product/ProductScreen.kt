@@ -114,7 +114,8 @@ fun ProductScreen(
                             tryGetProduct = viewModel::tryGetProduct,
                             setBarcode = viewModel::setBarcode,
                             seenProducts = state.seenProducts,
-                            selectedBarcode = state.product?.barcode
+                            selectedBarcode = state.product?.barcode,
+                            isLoading = state.isLoadingProduct
                         )
 
                     }
@@ -162,7 +163,8 @@ fun ProductScreen(
                         tryGetProduct = viewModel::tryGetProduct,
                         setBarcode = viewModel::setBarcode,
                         seenProducts = state.seenProducts,
-                        selectedBarcode = state.product?.barcode
+                        selectedBarcode = state.product?.barcode,
+                        isLoading = state.isLoadingProduct
                     )
 
                     AnimatedVisibility(visible = state.product != null) {
@@ -188,13 +190,15 @@ fun SelectionPane(
     selectedBarcode: String?,
     tryGetProduct: (barcode: String) -> Unit,
     setBarcode: (barcode: String) -> Unit,
+    isLoading: Boolean,
     seenProducts: List<ProductModel>
 ) {
-    Column {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         BarcodeEntry(
             barcode = queryBarcode,
             getProduct = { tryGetProduct(queryBarcode) },
-            setBarcode = setBarcode
+            setBarcode = setBarcode,
+            isLoading = isLoading
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -382,6 +386,7 @@ fun ecoGradeToColor(grade: Char): Color {
 fun BarcodeEntry(
     barcode: String,
     getProduct: () -> Unit,
+    isLoading: Boolean,
     setBarcode: (barcode: String) -> Unit,
 ) {
     Column {
@@ -395,6 +400,7 @@ fun BarcodeEntry(
                     FayIconButton(
                         modifier = Modifier.size(35.dp),
                         internalPadding = 0.dp,
+                        isLoading = isLoading,
                         onClick = getProduct
                     ) {
                         Icon(
@@ -420,16 +426,15 @@ fun ProductWall(
 ) {
     FlowRow(
         modifier = Modifier
-            .fillMaxWidth()
             .verticalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Start,
     ) {
         products.forEach {
             val isSelected = selectedBarcode == it.barcode
             Box(
                 modifier = Modifier
                     .padding(4.dp)
-                    .weight(1f)
+                    //.weight(1f)
             ) {
                 Box(modifier = Modifier.clickable { onProductClick(it.barcode) }) {
                     AsyncImage(

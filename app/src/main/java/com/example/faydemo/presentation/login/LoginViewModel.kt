@@ -14,8 +14,7 @@ import kotlinx.coroutines.launch
 
 data class LoginState(
     val initialized: Boolean = false,
-    val username: String = "",
-    val password: String = ""
+    val phoneNumber: String = "",
 )
 
 sealed class LoginNavEvent {
@@ -36,8 +35,7 @@ class LoginViewModel @Inject constructor(
     fun init() {}
 
     fun login() {
-        val username = uiState.value.username
-        val password = uiState.value.password
+        val username = uiState.value.phoneNumber
 
         //login to api
 
@@ -47,12 +45,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun setUsername(newValue: String) {
-        _uiState.update { it.copy(username = newValue) }
+        _uiState.update { it.copy(phoneNumber = newValue) }
     }
-
-    fun setPassword(newValue: String) {
-        _uiState.update { it.copy(password = newValue) }
-    }
-
 
 }

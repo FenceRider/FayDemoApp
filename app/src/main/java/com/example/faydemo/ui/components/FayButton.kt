@@ -44,24 +44,40 @@ fun FayPrimaryButton(
 fun FayIconButton(
     modifier: Modifier = Modifier,
     internalPadding: Dp = 8.dp,
+    isLoading: Boolean = false,
     onClick: () -> Unit,
     content: @Composable () -> Unit
 ) {
+
+    val click = {
+        if (!isLoading)
+            onClick()
+    }
+
     Surface(
         modifier = modifier,
         shape = FayRoundedCorner,
         color = MaterialTheme.colorScheme.primary,
         tonalElevation = 4.dp,
-        onClick = onClick
+        enabled = !isLoading,
+        onClick = click
     ) {
         IconButton(
-            onClick = onClick,
+            onClick = click,
+            enabled = !isLoading,
             colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary),
         ) {
             Box(modifier = Modifier.padding(vertical = internalPadding)) {
                 CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onPrimary) {
-                    content()
+                    if (isLoading) {
+                        Box(modifier = Modifier.padding(internalPadding)) {
+                            LoadingSpinner()
+                        }
+                    } else {
+                        content()
+                    }
                 }
+
             }
         }
     }
